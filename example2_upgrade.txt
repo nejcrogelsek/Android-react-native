@@ -1,0 +1,222 @@
+import React from 'react';
+import { Text, View, Button, Image } from 'react-native';
+import { createBottomTabNavigator, createAppContainer, createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
+class LogoHome extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <Image
+          source={require('./images/home.png')}
+          style={{ width: 30, height: 30, marginLeft: 10 }}
+        />
+        <Text style={{ fontWeight: "bold", marginLeft: 5 }} >HOME</Text>
+      </React.Fragment>
+    );
+  }
+}
+
+class HomeScreen extends React.Component {
+
+  static navigationOptions = {
+    headerTitle: <LogoHome />,
+  };
+
+  componentDidMount() {
+    this.props.navigation.setParams({ increaseCount: this._increaseCount });
+  }
+
+  state = {
+    count: 0,
+  };
+
+  _increaseCount = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button
+          title="Go to Members"
+          //onPress={() => this.props.navigation.navigate('Details')}
+          onPress={() => {
+            /* 1. Navigate to the Details route with params */
+            this.props.navigation.navigate('Members');
+          }}
+        />
+      </View>
+    );
+  }
+}
+
+class LogoMembers extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <Image
+          source={require('./images/members.svg')}
+          style={{ width: 30, height: 30, marginLeft: 10 }}
+        />
+        <Text style={{ fontWeight: "bold", marginLeft: 5 }} >HOME</Text>
+      </React.Fragment>
+    );
+  }
+}
+
+class MembersScreen extends React.Component {
+
+  static navigationOptions = ({ navigation, navigationOptions }) => {
+    const { params } = navigation.state;
+
+    return {
+      title: params ? params.otherParam : 'fml',
+      /* These values are used instead of the shared configuration! */
+
+    };
+  };
+
+  //static navigationOptions = {
+  //headerTitle: <LogoMembers />,
+  //};
+
+  render() {
+
+    /* 2. Get the param, provide a fallback value if not available */
+    const { navigation } = this.props;
+
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Members Screen</Text>
+      </View>
+    );
+  }
+}
+
+class LogoGallery extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <Image
+          source={require('./images/gallery.png')}
+          style={{ width: 30, height: 30, marginLeft: 10 }}
+        />
+        <Text style={{ fontWeight: "bold", marginLeft: 5 }} >HOME</Text>
+      </React.Fragment>
+    );
+  }
+}
+
+class GalleryScreen extends React.Component {
+
+  static navigationOptions = {
+    headerTitle: <LogoGallery />,
+  };
+
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Gallery!</Text>
+      </View>
+    );
+  }
+}
+
+class LogoAbout extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <Image
+          source={require('./images/about.png')}
+          style={{ width: 30, height: 30, marginLeft: 10 }}
+        />
+        <Text style={{ fontWeight: "bold", marginLeft: 5 }} >HOME</Text>
+      </React.Fragment>
+    );
+  }
+}
+
+class AboutScreen extends React.Component {
+
+  static navigationOptions = {
+    headerTitle: <LogoAbout />,
+  };
+
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>About Us!</Text>
+      </View>
+    );
+  }
+}
+
+class LogoContact extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <Image
+          source={require('./images/contact.svg')}
+          style={{ width: 30, height: 30, marginLeft: 10 }}
+        />
+        <Text style={{ fontWeight: "bold", marginLeft: 5 }} >HOME</Text>
+      </React.Fragment>
+    );
+  }
+}
+
+class ContactScreen extends React.Component {
+
+  static navigationOptions = {
+    headerTitle: <LogoContact />,
+  };
+
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Contact!</Text>
+      </View>
+    );
+  }
+}
+
+class LogoLogin extends React.Component {
+  render() {
+    return (
+      <React.Fragment>
+        <Image
+          source={require('./images/home.png')}
+          style={{ width: 30, height: 30, marginLeft: 10 }}
+        />
+        <Text style={{ fontWeight: "bold", marginLeft: 5 }} >HOME</Text>
+      </React.Fragment>
+    );
+  }
+}
+
+class LoginScreen extends React.Component {
+
+  static navigationOptions = {
+    headerTitle: <LogoLogin />,
+  };
+
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Login!</Text>
+      </View>
+    );
+  }
+}
+
+const TabNavigator = createMaterialTopTabNavigator({
+  Home: HomeScreen,
+  Members: MembersScreen,
+  Gallery: GalleryScreen,
+  About: AboutScreen,
+  Contact: ContactScreen,
+  Login: LoginScreen,
+});
+
+export default createAppContainer(TabNavigator);

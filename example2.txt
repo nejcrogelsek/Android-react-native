@@ -1,0 +1,75 @@
+import React from 'react';
+import { Text, View } from 'react-native';
+import { createBottomTabNavigator, createAppContainer, createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
+
+class HomeScreen extends React.Component {
+
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Home!</Text>
+      </View>
+    );
+  }
+}
+
+class MembersScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Members!</Text>
+      </View>
+    );
+  }
+}
+
+class GalleryScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Gallery!</Text>
+      </View>
+    );
+  }
+}
+
+class AboutScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>About Us!</Text>
+      </View>
+    );
+  }
+}
+
+class ContactScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Contact!</Text>
+      </View>
+    );
+  }
+}
+
+class LoginScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Login!</Text>
+      </View>
+    );
+  }
+}
+
+const TabNavigator = createMaterialTopTabNavigator({
+  Home: HomeScreen,
+  Members: MembersScreen,
+  Gallery: GalleryScreen,
+  About: AboutScreen,
+  Contact: ContactScreen,
+  Login: LoginScreen,
+});
+
+export default createAppContainer(TabNavigator);
