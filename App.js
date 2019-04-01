@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Text, View, Button, Image, TouchableHighlight } from 'react-native';
-import { createBottomTabNavigator, createAppContainer, createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator, createAppContainer, createStackNavigator } from 'react-navigation';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import HomeScreenContent from './src/screens/HomeScreenContent';
@@ -11,25 +11,8 @@ import GalleryScreenContent from './src/screens/GalleryScreenContent';
 import AboutScreenContent from './src/screens/AboutScreenContent';
 import ContactScreenContent from './src/screens/ContactScreenContent';
 
-class LogoHome extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Image
-          source={require('./images/home.png')}
-          style={{ width: 30, height: 30, marginLeft: 10 }}
-        />
-      </React.Fragment>
-    );
-  }
-}
 
 class HomeScreen extends React.Component {
-
-  static navigationOptions = {
-    headerTitle: <LogoHome />,
-  };
-
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -39,25 +22,7 @@ class HomeScreen extends React.Component {
   }
 }
 
-class LogoMembers extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Image
-          source={require('./images/members.svg')}
-          style={{ width: 30, height: 30, marginLeft: 10 }}
-        />
-      </React.Fragment>
-    );
-  }
-}
-
 class MembersScreen extends React.Component {
-
-  static navigationOptions = {
-    headerTitle: <LogoMembers />,
-  };
-
   render() {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -67,25 +32,7 @@ class MembersScreen extends React.Component {
   }
 }
 
-class LogoGallery extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Image
-          source={require('./images/gallery.png')}
-          style={{ width: 30, height: 30, marginLeft: 10 }}
-        />
-      </React.Fragment>
-    );
-  }
-}
-
 class GalleryScreen extends React.Component {
-
-  static navigationOptions = {
-    headerTitle: <LogoGallery />,
-  };
-
   render() {
     return (
       <React.Fragment>
@@ -95,25 +42,7 @@ class GalleryScreen extends React.Component {
   }
 }
 
-class LogoAbout extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Image
-          source={require('./images/about.png')}
-          style={{ width: 30, height: 30, marginLeft: 10 }}
-        />
-      </React.Fragment>
-    );
-  }
-}
-
 class AboutScreen extends React.Component {
-
-  static navigationOptions = {
-    headerTitle: <LogoAbout />,
-  };
-
   render() {
     return (
       <View>
@@ -123,25 +52,7 @@ class AboutScreen extends React.Component {
   }
 }
 
-class LogoContact extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Image
-          source={require('./images/contact.svg')}
-          style={{ width: 30, height: 30, marginLeft: 10 }}
-        />
-      </React.Fragment>
-    );
-  }
-}
-
 class ContactScreen extends React.Component {
-
-  static navigationOptions = {
-    headerTitle: <LogoContact />,
-  };
-
   render() {
     return (
       <React.Fragment>
@@ -151,25 +62,7 @@ class ContactScreen extends React.Component {
   }
 }
 
-class LogoLogin extends React.Component {
-  render() {
-    return (
-      <React.Fragment>
-        <Image
-          source={require('./images/home.png')}
-          style={{ width: 30, height: 30, marginLeft: 10 }}
-        />
-      </React.Fragment>
-    );
-  }
-}
-
 class LoginScreen extends React.Component {
-
-  static navigationOptions = {
-    headerTitle: <LogoLogin />,
-  };
-
   render() {
     return (
       <View>
@@ -180,7 +73,6 @@ class LoginScreen extends React.Component {
 }
 
 class RegisterScreen extends React.Component {
-
   render() {
     return (
       <View>
@@ -190,33 +82,114 @@ class RegisterScreen extends React.Component {
   }
 }
 
-/*
-const { navigate } = this.props.navigation; -> needs to be between render and return in login screen
+class ProfileScreen extends Component {
 
-//Button needs to be in login screen
---------------------------------
-<Button
-          title="Go to register"
-          onPress={() => navigate("Register", { screen: "RegisterScreen" })}
-        />
---------------------------------
-const MainNavigator = createStackNavigator({
-  Login: { screen: LoginScreen },
-  Register: { screen: RegisterScreen },
-});
+  // Setting up profile activity title.
+  static navigationOptions =
+    {
+      title: 'ProfileActivity',
 
-const App = createAppContainer(MainNavigator, TabNavigator);
+    };
 
-export default App;*/
 
-const TabNavigator = createMaterialTopTabNavigator({
-  Home: HomeScreen,
-  Members: MembersScreen,
-  Gallery: GalleryScreen,
-  About: AboutScreen,
-  Contact: ContactScreen,
-  Login: LoginScreen,
-  Register: RegisterScreen
-});
+  render() {
 
-export default createAppContainer(TabNavigator);
+    const { goBack } = this.props.navigation;
+
+    return (
+      <View>
+
+        <Text style={styles.TextComponentStyle}> {this.props.navigation.state.params.Email} </Text>
+
+        <Button title="Click here to Logout" onPress={() => goBack(null)} />
+
+      </View>
+    );
+  }
+}
+
+/*const LoginTab = createStackNavigator(
+  {
+    Login: LoginScreen,
+    Register: RegisterScreen,
+  },
+  {
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#0091EA',
+      },
+      headerTintColor: '#fff',
+      title: 'Sign in',
+    },
+  }
+);*/
+
+const LoginTab = createStackNavigator(
+  {
+    First: { screen: LoginScreen },
+
+    Second: { screen: ProfileScreen }
+
+  });
+
+const MainApp = createBottomTabNavigator(
+  {
+    Home: HomeScreen,
+    Members: MembersScreen,
+    Gallery: GalleryScreen,
+    About: AboutScreen,
+    Contact: ContactScreen,
+    Login: LoginTab
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, horizontal, tintColor }) => {
+        const { routeName } = navigation.state;
+        if (routeName === 'Home') {
+          return (
+            <Image
+              source={require('./images/home.png')}
+              style={{ width: 20, height: 20 }} />
+          );
+        } else if (routeName === 'Members') {
+          return (
+            <Image
+              source={require('./images/members.png')}
+              style={{ width: 20, height: 20 }} />
+          );
+        } else if (routeName === 'Gallery') {
+          return (
+            <Image
+              source={require('./images/gallery.png')}
+              style={{ width: 20, height: 20 }} />
+          );
+        } else if (routeName === 'About') {
+          return (
+            <Image
+              source={require('./images/about.png')}
+              style={{ width: 20, height: 20 }} />
+          );
+        } else if (routeName === 'Contact') {
+          return (
+            <Image
+              source={require('./images/mail.png')}
+              style={{ width: 20, height: 20 }} />
+          );
+        } else if (routeName === 'Login') {
+          return (
+            <Image
+              source={require('./images/login.png')}
+              style={{ width: 20, height: 20 }} />
+          );
+        }
+      },
+    }),
+    tabBarOptions: {
+      activeTintColor: '#FF6F00',
+      inactiveTintColor: '#263238',
+    },
+  }
+);
+
+
+export default createAppContainer(MainApp, LoginTab);

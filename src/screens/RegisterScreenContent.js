@@ -1,100 +1,139 @@
 import React, { Component } from 'react';
-import { Text, View, Button, Image, StyleSheet, ScrollView } from 'react-native';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
-import t from 'tcomb-form-native';
 
-const Form = t.form.Form;
-
-const User = t.struct({
-    name: t.String,
-    email: t.String,
-    password: t.String,
-    confirm_password: t.String,
-});
-
-const options = {
-    fields: {
-        name: {
-            error: 'Name is required'
-        },
-        email: {
-            error: 'Email is required'
-        },
-        password: {
-            error: 'Password is required'
-        },
-        confirm_password: {
-            error: 'You need to confirm your password'
-        },
-    },
-};
+import { StyleSheet, TextInput, View, Alert, Button, Text } from 'react-native';
 
 export default class RegisterScreenContent extends Component {
 
-    handleSubmit = () => {
-        const value = this._form.getValue(); // use that ref to get the form value
-        console.log('value: ', value);
+    constructor(props) {
+
+        super(props)
+
+        this.state = {
+
+            UserName: '',
+            UserEmail: '',
+            UserPassword: ''
+
+        }
+
+    }
+
+    UserRegistrationFunction = () => {
+
+
+        const { UserName } = this.state;
+        const { UserEmail } = this.state;
+        const { UserPassword } = this.state;
+
+
+
+        fetch('https://concrete-jungle.rogelsek.eu/api/registration/user_registration.php', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+
+                name: UserName,
+
+                email: UserEmail,
+
+                password: UserPassword
+
+            })
+
+        }).then((response) => response.json())
+            .then((responseJson) => {
+
+                // Showing response message coming from server after inserting records.
+                Alert.alert(responseJson);
+
+            }).catch((error) => {
+                console.error(error);
+            });
+
+
     }
 
     render() {
         return (
-            <React.Fragment>
-                <ScrollView>
-                    <View style={styles.container}>
-                        <Text style={styles.paragraph}>
-                            REGISTER
-                        </Text>
-                        <Form
-                            ref={c => this._form = c} //Assign a ref
-                            type={User}
-                            options={options}
-                        />
-                        <Button
-                            title="Submit"
-                            onPress={this.handleSubmit}
-                        />
-                    </View>
-                </ScrollView>
-            </React.Fragment>
-        )
-    }
-}
 
-const formStyles = {
-    ...Form.stylesheet,
-    formGroup: {
-        normal: {
-            marginBottom: 10
-        },
-    },
-    controlLabel: {
-        normal: {
-            color: 'blue',
-            fontSize: 18,
-            marginBottom: 7,
-            fontWeight: '600'
-        },
-        // the style applied when a validation error occours
-        error: {
-            color: 'red',
-            fontSize: 18,
-            marginBottom: 7,
-            fontWeight: '600'
-        }
+            <View>
+
+                <Text style={{ fontSize: 20, color: "#000", textAlign: 'center', marginBottom: 15 }}>User Registration Form</Text>
+
+                <TextInput
+
+                    // Adding hint in Text Input using Place holder.
+                    placeholder="Enter User Name"
+
+                    onChangeText={UserName => this.setState({ UserName })}
+
+                    // Making the Under line Transparent.
+                    underlineColorAndroid='transparent'
+
+                    style={styles.TextInputStyleClass}
+                />
+
+                <TextInput
+
+                    // Adding hint in Text Input using Place holder.
+                    placeholder="Enter User Email"
+
+                    onChangeText={UserEmail => this.setState({ UserEmail })}
+
+                    // Making the Under line Transparent.
+                    underlineColorAndroid='transparent'
+
+                    style={styles.TextInputStyleClass}
+                />
+
+                <TextInput
+
+                    // Adding hint in Text Input using Place holder.
+                    placeholder="Enter User Password"
+
+                    onChangeText={UserPassword => this.setState({ UserPassword })}
+
+                    // Making the Under line Transparent.
+                    underlineColorAndroid='transparent'
+
+                    style={styles.TextInputStyleClass}
+
+                    secureTextEntry={true}
+                />
+
+                <Button title="Click Here To Register" onPress={this.UserRegistrationFunction} color="#2196F3" />
+
+
+
+            </View>
+
+        );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+
+    MainContainer: {
+
         justifyContent: 'center',
-        marginTop: 50,
-        padding: 20,
+        flex: 1,
+        margin: 10
     },
-    paragraph: {
-        margin: 24,
-        fontSize: 18,
-        fontWeight: 'bold',
+
+    TextInputStyleClass: {
+
         textAlign: 'center',
-        color: '#34495e',
+        marginBottom: 7,
+        height: 40,
+        borderWidth: 1,
+        // Set border Hex Color Code Here.
+        borderColor: '#2196F3',
+
+        // Set border Radius.
+        borderRadius: 5
     },
+
 });

@@ -1,93 +1,150 @@
 import React, { Component } from 'react';
-import { Text, View, Button, Image, StyleSheet, ScrollView } from 'react-native';
-import { createBottomTabNavigator, createAppContainer, createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
-import { Link } from 'react-router-dom';
-import t from 'tcomb-form-native';
-import A from 'react-native-a';
 
-const Form = t.form.Form;
+import { StyleSheet, TextInput, View, Alert, Button, Text } from 'react-native';
 
-const User = t.struct({
-    email: t.String,
-    password: t.String,
-});
+// Importing Stack Navigator library to add multiple activities.
+import { createStackNavigator } from 'react-navigation';
 
-const options = {
-    fields: {
-        email: {
-            error: 'Email is required'
-        },
-        password: {
-            error: 'Password is required'
-        },
-    },
-};
-
+// Creating Login Activity.
 export default class LoginScreenContent extends Component {
 
-    handleSubmit = () => {
-        const value = this._form.getValue(); // use that ref to get the form value
-        console.log('value: ', value);
+    // Setting up Login Activity title.
+    static navigationOptions =
+        {
+            title: 'LoginActivity',
+        };
+
+    constructor(props) {
+
+        super(props)
+        this.UserLoginFunction = this.UserLoginFunction.bind(this);
+        this.state = {
+
+            UserEmail: '',
+            UserPassword: ''
+
+        }
+
+    }
+
+    UserLoginFunction = () => {
+
+        const { UserEmail } = this.state;
+        const { UserPassword } = this.state;
+
+
+        fetch('https://concrete-jungle.rogelsek.eu/api/login/User_Login.php', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+
+                email: UserEmail,
+
+                password: UserPassword
+
+            })
+
+        }).then((response) => response.json())
+            .then((responseJson) => {
+
+                // If server response message same as Data Matched
+                if (responseJson === 'Data Matched') {
+                    console.warn(responseJson);
+                    //Open ProfileScreen and send user EMAIL to ProfileScreen.
+                    //this.props.navigation.navigate('Second', { Email: UserEmail });
+
+                } else if (responseJson === 'Admin') {
+                    console.warn(responseJson);
+                    //Open ProfileScreen and send user EMAIL to ProfileScreen.
+                    //this.props.navigation.navigate('Second', { Email: UserEmail });
+                }
+                else {
+
+                    Alert.alert(responseJson);
+                }
+
+            }).catch((error) => {
+                console.error(error);
+            });
+
+
     }
 
     render() {
         return (
-            <ScrollView>
-                <View style={styles.container}>
-                    <Text style={styles.paragraph}>
-                        LOGIN
-                </Text>
-                    <Form
-                        ref={c => this._form = c} //Assign a ref
-                        type={User}
-                        options={options}
-                    />
-                    <Button
-                        title="Submit"
-                        onPress={this.handleSubmit}
-                    />
-                    <A href="./components/RegisterScreenContent">Register</A>
-                </View>
-            </ScrollView>
-        )
-    }
-}
 
-const formStyles = {
-    ...Form.stylesheet,
-    formGroup: {
-        normal: {
-            marginBottom: 10
-        },
-    },
-    controlLabel: {
-        normal: {
-            color: 'blue',
-            fontSize: 18,
-            marginBottom: 7,
-            fontWeight: '600'
-        },
-        // the style applied when a validation error occours
-        error: {
-            color: 'red',
-            fontSize: 18,
-            marginBottom: 7,
-            fontWeight: '600'
-        }
+            <View>
+
+                <Text style={styles.TextComponentStyle}>User Login Form</Text>
+
+                <TextInput
+
+                    // Adding hint in Text Input using Place holder.
+                    placeholder="Enter User Email"
+
+                    onChangeText={UserEmail => this.setState({ UserEmail })}
+
+                    // Making the Under line Transparent.
+                    underlineColorAndroid='transparent'
+
+                    style={styles.TextInputStyleClass}
+                />
+
+                <TextInput
+
+                    // Adding hint in Text Input using Place holder.
+                    placeholder="Enter User Password"
+
+                    onChangeText={UserPassword => this.setState({ UserPassword })}
+
+                    // Making the Under line Transparent.
+                    underlineColorAndroid='transparent'
+
+                    style={styles.TextInputStyleClass}
+
+                    secureTextEntry={true}
+                />
+
+                <Button title="Click Here To Login" onPress={this.UserLoginFunction} color="#2196F3" />
+
+
+
+            </View>
+
+        );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+
+    MainContainer: {
+
         justifyContent: 'center',
-        marginTop: 50,
-        padding: 20,
+        flex: 1,
+        margin: 10,
     },
-    paragraph: {
-        margin: 24,
-        fontSize: 18,
-        fontWeight: 'bold',
+
+    TextInputStyleClass: {
+
         textAlign: 'center',
-        color: '#34495e',
+        marginBottom: 7,
+        height: 40,
+        borderWidth: 1,
+        // Set border Hex Color Code Here.
+        borderColor: '#2196F3',
+
+        // Set border Radius.
+        borderRadius: 5,
+
     },
+
+    TextComponentStyle: {
+        fontSize: 20,
+        color: "#000",
+        textAlign: 'center',
+        marginBottom: 15
+    }
 });
