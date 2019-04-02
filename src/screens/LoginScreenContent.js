@@ -8,12 +8,6 @@ import { createStackNavigator } from 'react-navigation';
 // Creating Login Activity.
 export default class LoginScreenContent extends Component {
 
-    // Setting up Login Activity title.
-    static navigationOptions =
-        {
-            title: 'LoginActivity',
-        };
-
     constructor(props) {
 
         super(props)

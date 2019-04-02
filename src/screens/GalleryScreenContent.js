@@ -11,7 +11,9 @@ import {
     ListView,
     Platform,
     ActivityIndicator,
-    RefreshControl
+    RefreshControl,
+    Modal,
+    TouchableHighlight
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -29,7 +31,6 @@ export default class GalleryScreenContent extends Component {
             data: null,
             image_tag: '',
             refreshing: false
-
         }
     }
 
@@ -135,6 +136,16 @@ export default class GalleryScreenContent extends Component {
         })
     }
 
+    /*imageView = function (options) {
+        return {
+            position: 'absolute',
+            width: '100%',
+            height: 100
+        }
+
+        console.warn("working");
+    }*/
+
     render() {
 
         if (this.state.isLoading) {
@@ -183,7 +194,6 @@ export default class GalleryScreenContent extends Component {
                     </TouchableOpacity>
 
                     <View style={styles.MainContainer}>
-
                         <ListView
 
                             dataSource={this.state.dataSource}
@@ -192,7 +202,7 @@ export default class GalleryScreenContent extends Component {
 
                             renderRow={(rowData) =>
 
-                                <View style={{ flex: 1, flexDirection: 'row' }}>
+                                <View >
 
                                     <Image source={{ uri: rowData.image_path }} style={styles.imageViewContainer} />
 
@@ -264,8 +274,8 @@ const styles = StyleSheet.create({
         paddingTop: (Platform.OS === 'ios') ? 20 : 0,
     },
     imageViewContainer: {
-        width: '50%',
-        height: 100,
+        width: 300,
+        height: 350,
         margin: 10,
         borderRadius: 10
     },

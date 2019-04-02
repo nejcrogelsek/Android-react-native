@@ -14,6 +14,8 @@
     "react-native-email": "^1.0.2",
     "react-native-gesture-handler": "^1.0.17",
     "react-native-image-picker": "^0.28.0",
+    "react-native-image-view": "^2.1.4",
+    "react-native-image-zoom-viewer": "^2.2.25",
     "react-navigation": "^3.3.2",
     "react-router-dom": "^4.3.1",
     "rn-fetch-blob": "^0.10.15",

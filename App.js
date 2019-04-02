@@ -63,6 +63,13 @@ class ContactScreen extends React.Component {
 }
 
 class LoginScreen extends React.Component {
+
+  // Setting up LoginScreen title.
+  static navigationOptions =
+    {
+      title: 'Sign in',
+    };
+
   render() {
     return (
       <View>
@@ -84,10 +91,10 @@ class RegisterScreen extends React.Component {
 
 class ProfileScreen extends Component {
 
-  // Setting up profile activity title.
+  // Setting up ProfileScreen title.
   static navigationOptions =
     {
-      title: 'ProfileActivity',
+      title: 'ProfileScreen',
 
     };
 
