@@ -1,9 +1,22 @@
 import React, { Component } from 'react';
 
-import { StyleSheet, TextInput, View, Alert, Button, Text } from 'react-native';
+import {
+    Text,
+    View,
+    ScrollView,
+    Button,
+    TextInput,
+    KeyboardAvoidingView,
+    AsyncStorage,
+    StyleSheet,
+    TouchableOpacity,
+    Alert,
+    forceRemount
+} from 'react-native';
 
 // Importing Stack Navigator library to add multiple activities.
 import { createStackNavigator } from 'react-navigation';
+import { ThemeConsumer } from 'react-native-elements';
 
 // Creating Login Activity.
 export default class LoginScreenContent extends Component {
@@ -12,19 +25,23 @@ export default class LoginScreenContent extends Component {
 
         super(props)
         this.UserLoginFunction = this.UserLoginFunction.bind(this);
+        this.emailInput = React.createRef();
+        this.passwordInput = React.createRef();
         this.state = {
-
-            UserEmail: '',
-            UserPassword: ''
-
+            email: 'velavelavela@gmail.com',
+            password: 'test123',
+            loginCheckExist: 'no',
+            userID: 0,
+            admin: 0,
+            name: 'testAPI'
         }
 
     }
 
-    UserLoginFunction = () => {
+    UserLoginFunction = async () => {
 
-        const { UserEmail } = this.state;
-        const { UserPassword } = this.state;
+        //const { UserEmail } = this.state;
+        //const { UserPassword } = this.state;
 
 
         fetch('https://concrete-jungle.rogelsek.eu/api/login/User_Login.php', {
@@ -35,43 +52,70 @@ export default class LoginScreenContent extends Component {
             },
             body: JSON.stringify({
 
-                email: UserEmail,
+                email: this.state.email,
 
-                password: UserPassword
+                password: this.state.password
 
             })
 
         }).then((response) => response.json())
-            .then((responseJson) => {
+            .then((response) => {
 
                 // If server response message same as Data Matched
-                if (responseJson === 'Data Matched') {
-                    console.warn(responseJson);
-                    //Open ProfileScreen and send user EMAIL to ProfileScreen.
-                    //this.props.navigation.navigate('Second', { Email: UserEmail });
+                if (response === 'Data Matched') {
 
-                } else if (responseJson === 'Admin') {
-                    console.warn(responseJson);
-                    //Open ProfileScreen and send user EMAIL to ProfileScreen.
-                    //this.props.navigation.navigate('Second', { Email: UserEmail });
+                    //new values in AsyncStorage
+                    //AsyncStorage.setItem('email', JSON.stringify(response.email));
+                    AsyncStorage.setItem('admin', JSON.stringify(0));
+
+                    //console.warn(JSON.stringify(response.admin));
+
+                    /*this.setState({
+                        loginCheckExist: response.exist,
+                        userID: response.id,
+                        admin: response.admin,
+                        name: response.name
+                    }, () => console.warn(response));*/
+
+                    //Alert if the user is successful auth
+                    Alert.alert(response);
+                    this.props.navigation.navigate('MeHome');
+
+
+                } else if (response === 'Admin') {
+
+                    //AsyncStorage.setItem('email', JSON.stringify(response.email));
+                    //AsyncStorage.setItem('admin', JSON.stringify(response.admin));
+                    AsyncStorage.setItem('admin', JSON.stringify(1));
+
+                    /*this.setState({
+                        loginCheckExist: response.exist,
+                        userID: response.id,
+                        admin: response.admin,
+                        name: response.name
+                    }, () => console.warn(response));*/
+
+                    //Alert if the user is successful auth
+                    Alert.alert(response);
+                    this.props.navigation.navigate('MeHome');
                 }
                 else {
 
-                    Alert.alert(responseJson);
+                    Alert.alert(response, { cancelable: false });
                 }
 
             }).catch((error) => {
                 console.error(error);
             });
 
-
+        this.emailInput.current.clear();
+        this.passwordInput.current.clear();
     }
 
     render() {
         return (
 
             <View>
-
                 <Text style={styles.TextComponentStyle}>User Login Form</Text>
 
                 <TextInput
@@ -79,7 +123,9 @@ export default class LoginScreenContent extends Component {
                     // Adding hint in Text Input using Place holder.
                     placeholder="Enter User Email"
 
-                    onChangeText={UserEmail => this.setState({ UserEmail })}
+                    ref={this.emailInput}
+
+                    onChangeText={(email) => this.setState({ email })}
 
                     // Making the Under line Transparent.
                     underlineColorAndroid='transparent'
@@ -92,7 +138,9 @@ export default class LoginScreenContent extends Component {
                     // Adding hint in Text Input using Place holder.
                     placeholder="Enter User Password"
 
-                    onChangeText={UserPassword => this.setState({ UserPassword })}
+                    ref={this.passwordInput}
+
+                    onChangeText={(password) => this.setState({ password })}
 
                     // Making the Under line Transparent.
                     underlineColorAndroid='transparent'
@@ -140,5 +188,23 @@ const styles = StyleSheet.create({
         color: "#000",
         textAlign: 'center',
         marginBottom: 15
+    },
+
+    unosTexta: {
+        backgroundColor: '#00BFFF',
+        width: '70%',
+        marginLeft: '15%',
+        marginRight: '15%',
+        marginTop: '2%',
+    },
+
+    posaljiDugme: {
+        backgroundColor: '#00B2EE',
+        textAlign: 'center',
+        color: 'white',
+        width: '70%',
+        marginLeft: '15%',
+        marginRight: '15%',
+        marginTop: '2%'
     }
 });

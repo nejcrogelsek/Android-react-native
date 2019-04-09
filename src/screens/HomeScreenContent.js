@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
-import { Text, View, Button, Image, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, Alert, TextInput } from 'react-native';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import {
+    Text,
+    View,
+    Button,
+    Image,
+    StyleSheet,
+    ScrollView,
+    ActivityIndicator,
+    RefreshControl,
+    Alert,
+    TextInput
+} from 'react-native';
+import { createStackNavigator, createAppContainer, NavigationEvents } from 'react-navigation';
 import { BorderlessButton } from 'react-native-gesture-handler';
+
+import LoginScreenContent from './LoginScreenContent';
 
 export default class HomeScreenContent extends Component {
 
@@ -14,11 +27,13 @@ export default class HomeScreenContent extends Component {
             TextInputDesc: '',
             refreshing: false,
             isLoading: true,
-            dataSource: null
+            dataSource: null,
+            ifAdmin: false
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+
         return fetch('https://concrete-jungle.rogelsek.eu/api/apiArticle')
             .then((response) => response.json())
             .then((responseJson) => {
@@ -30,13 +45,25 @@ export default class HomeScreenContent extends Component {
             .catch((error) => {
                 console.log(error)
             });
+
+        let value = await AsyncStorage.getItem('admin');
+        if (value == 1) {
+
+            this.setState({
+                ifAdmin: true
+            });
+        } else {
+            this.setState({
+                ifAdmin: false
+            })
+        }
+        console.warn(this.state.ifAdmin);
     }
 
     InsertDataToServer = () => {
 
         const Title = this.state.TextInputTitle;
         const Desc = this.state.TextInputDesc;
-        //console.warn(Title + "----" + Desc);
 
         fetch('https://concrete-jungle.rogelsek.eu/api/postArticle/submit_article_info.php', {
             method: 'POST',
@@ -51,7 +78,6 @@ export default class HomeScreenContent extends Component {
 
         }).then((response) => response.json())
             .then((responseJson) => {
-                //console.warn("I'm in!" + Title + "----" + Desc);
                 // Showing response message coming from server after inserting records.
                 Alert.alert(responseJson);
             }).catch((error) => {
@@ -99,44 +125,54 @@ export default class HomeScreenContent extends Component {
                         />
                     }
                 >
+
+                    <NavigationEvents onDidFocus={() => this.componentDidMount()} />
+
                     <View style={styles.MainContainer}>
+                        {this.state.ifAdmin == true ?
+                            <View>
 
-                        <TextInput
+                                <TextInput
 
-                            // Adding hint in Text Input using Place holder.
-                            placeholder="Enter Title"
+                                    // Adding hint in Text Input using Place holder.
+                                    placeholder="Enter Title"
 
-                            ref={this.titleInput}
+                                    ref={this.titleInput}
 
-                            onChangeText={(TextInputTitle) => this.setState({ TextInputTitle })}
+                                    onChangeText={(TextInputTitle) => this.setState({ TextInputTitle })}
 
-                            // Making the Under line Transparent.
-                            underlineColorAndroid='transparent'
+                                    // Making the Under line Transparent.
+                                    underlineColorAndroid='transparent'
 
-                            style={styles.TextInputStyleClass}
-                        />
+                                    style={styles.TextInputStyleClass}
+                                />
 
-                        <TextInput
+                                <TextInput
 
-                            // Adding hint in Text Input using Place holder.
-                            placeholder="Enter Description"
+                                    // Adding hint in Text Input using Place holder.
+                                    placeholder="Enter Description"
 
-                            ref={this.descInput}
+                                    ref={this.descInput}
 
-                            onChangeText={(TextInputDesc) => this.setState({ TextInputDesc })}
+                                    onChangeText={(TextInputDesc) => this.setState({ TextInputDesc })}
 
-                            // Making the Under line Transparent.
-                            underlineColorAndroid='transparent'
+                                    // Making the Under line Transparent.
+                                    underlineColorAndroid='transparent'
 
-                            style={styles.TextInputStyleClass}
-                        />
+                                    style={styles.TextInputStyleClass}
+                                />
 
-                        <Button
+                                <Button
 
-                            title="Insert Text Input Data to Server"
-                            onPress={this.InsertDataToServer} color="#2196F3"
+                                    title="Insert Text Input Data to Server"
+                                    onPress={this.InsertDataToServer} color="#2196F3"
 
-                        />
+                                />
+
+                            </View>
+                            : null}
+
+
 
 
                         {data}

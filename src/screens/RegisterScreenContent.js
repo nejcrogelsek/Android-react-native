@@ -7,7 +7,9 @@ export default class RegisterScreenContent extends Component {
     constructor(props) {
 
         super(props)
-
+        this.nameInput = React.createRef();
+        this.emailInput = React.createRef();
+        this.passwordInput = React.createRef();
         this.state = {
 
             UserName: '',
@@ -53,6 +55,9 @@ export default class RegisterScreenContent extends Component {
                 console.error(error);
             });
 
+        this.nameInput.current.clear();
+        this.emailInput.current.clear();
+        this.passwordInput.current.clear();
 
     }
 
@@ -68,6 +73,8 @@ export default class RegisterScreenContent extends Component {
                     // Adding hint in Text Input using Place holder.
                     placeholder="Enter User Name"
 
+                    ref={this.nameInput}
+
                     onChangeText={UserName => this.setState({ UserName })}
 
                     // Making the Under line Transparent.
@@ -81,6 +88,8 @@ export default class RegisterScreenContent extends Component {
                     // Adding hint in Text Input using Place holder.
                     placeholder="Enter User Email"
 
+                    ref={this.emailInput}
+
                     onChangeText={UserEmail => this.setState({ UserEmail })}
 
                     // Making the Under line Transparent.
@@ -93,6 +102,8 @@ export default class RegisterScreenContent extends Component {
 
                     // Adding hint in Text Input using Place holder.
                     placeholder="Enter User Password"
+
+                    ref={this.passwordInput}
 
                     onChangeText={UserPassword => this.setState({ UserPassword })}
 

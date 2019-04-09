@@ -10,6 +10,7 @@ import MembersScreenContent from './src/screens/MembersScreenContent';
 import GalleryScreenContent from './src/screens/GalleryScreenContent';
 import AboutScreenContent from './src/screens/AboutScreenContent';
 import ContactScreenContent from './src/screens/ContactScreenContent';
+import Me from './src/screens/Me';
 
 
 class HomeScreen extends React.Component {
@@ -115,29 +116,43 @@ class ProfileScreen extends Component {
   }
 }
 
-/*const LoginTab = createStackNavigator(
-  {
-    Login: LoginScreen,
-    Register: RegisterScreen,
+//ME STACK 
+const meStack = createStackNavigator({
+
+
+  //ZAČETNI SCREEN 
+  MeHome: {
+    screen: Me,
+    navigationOptions: {
+      unmountInactiveRoutes: true,
+      title: 'Profile'
+    }
   },
-  {
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: '#0091EA',
-      },
-      headerTintColor: '#fff',
-      title: 'Sign in',
+
+  //REGISTER
+  Register: {
+    screen: RegisterScreenContent,
+    navigationOptions: {
+      title: 'Sign Up'
     },
-  }
-);*/
+  },
 
-const LoginTab = createStackNavigator(
+  //LOGIN 
+  Login: {
+    screen: LoginScreenContent,
+    navigationOptions: {
+      unmountInactiveRoutes: true,
+      title: 'Sign In'
+    },
+  },
+
+
+},
   {
-    First: { screen: LoginScreen },
+    initialRouteName: "MeHome"
+  },
 
-    Second: { screen: ProfileScreen }
-
-  });
+);
 
 const MainApp = createBottomTabNavigator(
   {
@@ -146,7 +161,7 @@ const MainApp = createBottomTabNavigator(
     Gallery: GalleryScreen,
     About: AboutScreen,
     Contact: ContactScreen,
-    Login: LoginTab
+    Login: meStack
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -199,4 +214,4 @@ const MainApp = createBottomTabNavigator(
 );
 
 
-export default createAppContainer(MainApp, LoginTab);
+export default createAppContainer(MainApp, meStack);

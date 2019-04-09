@@ -12,8 +12,7 @@ import {
     Platform,
     ActivityIndicator,
     RefreshControl,
-    Modal,
-    TouchableHighlight
+    Modal
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -135,16 +134,6 @@ export default class GalleryScreenContent extends Component {
             refreshing: false
         })
     }
-
-    /*imageView = function (options) {
-        return {
-            position: 'absolute',
-            width: '100%',
-            height: 100
-        }
-
-        console.warn("working");
-    }*/
 
     render() {
 
