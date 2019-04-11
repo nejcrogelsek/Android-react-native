@@ -9,7 +9,8 @@ import {
     ActivityIndicator,
     RefreshControl,
     Alert,
-    TextInput
+    TextInput,
+    AsyncStorage
 } from 'react-native';
 import { createStackNavigator, createAppContainer, NavigationEvents } from 'react-navigation';
 import { BorderlessButton } from 'react-native-gesture-handler';
@@ -32,32 +33,35 @@ export default class HomeScreenContent extends Component {
         }
     }
 
-    async componentDidMount() {
+    componentDidMount() {
 
         return fetch('https://concrete-jungle.rogelsek.eu/api/apiArticle')
             .then((response) => response.json())
-            .then((responseJson) => {
+            .then(async (responseJson) => {
                 this.setState({
                     isLoading: false,
                     dataSource: responseJson.data,
                 })
+
+                let value = await AsyncStorage.getItem('admin');
+                if (value == 1) {
+
+                    this.setState({
+                        ifAdmin: true
+                    });
+
+                    //console.warn(this.state.name);
+
+                } else {
+                    this.setState({
+                        ifAdmin: false
+                    });
+                }
+
             })
             .catch((error) => {
                 console.log(error)
             });
-
-        let value = await AsyncStorage.getItem('admin');
-        if (value == 1) {
-
-            this.setState({
-                ifAdmin: true
-            });
-        } else {
-            this.setState({
-                ifAdmin: false
-            })
-        }
-        console.warn(this.state.ifAdmin);
     }
 
     InsertDataToServer = () => {
@@ -96,7 +100,6 @@ export default class HomeScreenContent extends Component {
             refreshing: false
         })
     }
-
 
     render() {
 
@@ -168,11 +171,8 @@ export default class HomeScreenContent extends Component {
                                     onPress={this.InsertDataToServer} color="#2196F3"
 
                                 />
-
                             </View>
                             : null}
-
-
 
 
                         {data}

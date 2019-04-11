@@ -13,8 +13,6 @@ import {
 } from 'react-native';
 import { createStackNavigator, createAppContainer, StackNavigator, navigate, StackActions, NavigationActions, NavigationEvents } from 'react-navigation';
 
-//import console = require('console');
-
 
 export default class Me extends React.Component {
 

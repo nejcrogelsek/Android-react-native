@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
-import { Text, View, Button, Image, StyleSheet, ScrollView, ActivityIndicator, RefreshControl, Alert, TextInput } from 'react-native';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import {
+    Text,
+    View,
+    Button,
+    Image,
+    StyleSheet,
+    ScrollView,
+    ActivityIndicator,
+    RefreshControl,
+    Alert,
+    TextInput,
+    AsyncStorage
+} from 'react-native';
+import { createStackNavigator, createAppContainer, NavigationEvents } from 'react-navigation';
 
 export default class MembersScreenContent extends Component {
     constructor(props) {
@@ -15,17 +27,66 @@ export default class MembersScreenContent extends Component {
             refreshing: false,
             isLoading: true,
             dataSource: null,
+            ifRegistered: 0,
+            ifAdminData: false,
+            checkForAdmin: false
         };
     }
 
     componentDidMount() {
         return fetch('https://concrete-jungle.rogelsek.eu/api/apiMember')
             .then((response) => response.json())
-            .then((responseJson) => {
+            .then(async (responseJson) => {
                 this.setState({
                     isLoading: false,
                     dataSource: responseJson.data,
                 })
+
+                let value = await AsyncStorage.getItem('admin');
+                if (value == 1) {
+
+                    this.setState({
+                        ifAdmin: true,
+                        ifAdminData: true,
+                        checkForAdmin: true
+                    });
+
+                    //console.warn(this.state.name);
+
+                } else {
+                    this.setState({
+                        ifAdmin: false,
+                        ifAdminData: false
+                    });
+                }
+
+                let valueIfRegistered = await AsyncStorage.getItem('admin');
+                if (valueIfRegistered == 0) {
+                    this.setState({
+                        ifRegistered: 1
+                    });
+                } else {
+                    this.setState({
+                        ifRegistered: 0
+                    });
+                }
+
+                if (this.state.checkForAdmin == true) {
+                    this.setState({
+                        ifRegistered: undefined
+                    });
+                } else {
+                    if (valueIfRegistered == 0) {
+                        this.setState({
+                            ifRegistered: 1
+                        });
+                    } else {
+                        this.setState({
+                            ifRegistered: 0
+                        });
+                    }
+                }
+
             })
             .catch((error) => {
                 console.log(error)
@@ -101,57 +162,75 @@ export default class MembersScreenContent extends Component {
                         />
                     }
                 >
+                    <NavigationEvents onDidFocus={() => this.componentDidMount()} />
+
 
                     <View style={styles.MainContainer}>
+                        {this.state.ifAdmin == true ?
+                            <View>
+                                <TextInput
 
-                        <TextInput
+                                    // Adding hint in Text Input using Place holder.
+                                    placeholder="Enter Name"
 
-                            // Adding hint in Text Input using Place holder.
-                            placeholder="Enter Name"
+                                    ref={this.nameInput}
 
-                            ref={this.nameInput}
+                                    onChangeText={(TextInputName) => this.setState({ TextInputName })}
 
-                            onChangeText={(TextInputName) => this.setState({ TextInputName })}
+                                    // Making the Under line Transparent.
+                                    underlineColorAndroid='transparent'
 
-                            // Making the Under line Transparent.
-                            underlineColorAndroid='transparent'
+                                    style={styles.TextInputStyleClass}
+                                />
 
-                            style={styles.TextInputStyleClass}
-                        />
+                                <TextInput
 
-                        <TextInput
+                                    // Adding hint in Text Input using Place holder.
+                                    placeholder="Enter Age"
 
-                            // Adding hint in Text Input using Place holder.
-                            placeholder="Enter Age"
+                                    ref={this.ageInput}
 
-                            ref={this.ageInput}
+                                    onChangeText={(TextInputAge) => this.setState({ TextInputAge })}
 
-                            onChangeText={(TextInputAge) => this.setState({ TextInputAge })}
+                                    // Making the Under line Transparent.
+                                    underlineColorAndroid='transparent'
 
-                            // Making the Under line Transparent.
-                            underlineColorAndroid='transparent'
+                                    style={styles.TextInputStyleClass}
+                                />
 
-                            style={styles.TextInputStyleClass}
-                        />
+                                <TextInput
 
-                        <TextInput
+                                    // Adding hint in Text Input using Place holder.
+                                    placeholder="Enter Email"
 
-                            // Adding hint in Text Input using Place holder.
-                            placeholder="Enter Email"
+                                    ref={this.emailInput}
 
-                            ref={this.emailInput}
+                                    onChangeText={(TextInputEmail) => this.setState({ TextInputEmail })}
 
-                            onChangeText={(TextInputEmail) => this.setState({ TextInputEmail })}
+                                    // Making the Under line Transparent.
+                                    underlineColorAndroid='transparent'
 
-                            // Making the Under line Transparent.
-                            underlineColorAndroid='transparent'
+                                    style={styles.TextInputStyleClass}
+                                />
 
-                            style={styles.TextInputStyleClass}
-                        />
+                                <Button title="Insert Text Input Data to Server" onPress={this.InsertDataToServer} color="#2196F3" />
+                            </View> : null}
 
-                        <Button title="Insert Text Input Data to Server" onPress={this.InsertDataToServer} color="#2196F3" />
+                        {this.state.ifRegistered == 1 ?
+                            <View>
+                                {data}
+                            </View>
+                            : null}
 
-                        {data}
+                        {this.state.ifAdminData == true ?
+                            <View>
+                                {data}
+                            </View>
+                            : null}
+
+                        {this.state.ifRegistered == 0 ?
+                            <Text>You need to be registered to see all the members!</Text>
+                            : null}
                     </View>
                 </ScrollView>
             )

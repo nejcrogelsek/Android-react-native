@@ -12,11 +12,13 @@ import {
     Platform,
     ActivityIndicator,
     RefreshControl,
-    Modal
+    Modal,
+    AsyncStorage
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import { ScrollView } from 'react-native-gesture-handler';
+import { NavigationEvents } from 'react-navigation';
 
 
 export default class GalleryScreenContent extends Component {
@@ -29,7 +31,8 @@ export default class GalleryScreenContent extends Component {
             ImageSource: null,
             data: null,
             image_tag: '',
-            refreshing: false
+            refreshing: false,
+            ifAdmin: false
         }
     }
 
@@ -43,14 +46,30 @@ export default class GalleryScreenContent extends Component {
 
         return fetch('https://concrete-jungle.rogelsek.eu/api/Project/ImagesList.php')
             .then((response) => response.json())
-            .then((responseJson) => {
+            .then(async (responseJson) => {
                 let ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
                 this.setState({
                     isLoading: false,
                     dataSource: ds.cloneWithRows(responseJson),
-                }, function () {
-                    // In this block you can do something with new state.
-                });
+                },
+                    function () {
+                        // In this block you can do something with new state.
+                    });
+
+                let value = await AsyncStorage.getItem('admin');
+                if (value == 1) {
+
+                    this.setState({
+                        ifAdmin: true
+                    });
+
+                    //console.warn(this.state.name);
+
+                } else {
+                    this.setState({
+                        ifAdmin: false
+                    });
+                }
             })
             .catch((error) => {
                 console.error(error);
@@ -154,33 +173,36 @@ export default class GalleryScreenContent extends Component {
                     />
                 }
             >
+                <NavigationEvents onDidFocus={() => this.componentDidMount()} />
                 <View style={styles.container}>
+                    {this.state.ifAdmin == 1 ?
+                        <React.Fragment>
+                            <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
 
-                    <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
+                                <View style={styles.ImageContainer}>
 
-                        <View style={styles.ImageContainer}>
+                                    {this.state.ImageSource === null ? <Text>Select a Photo</Text> :
+                                        <Image style={styles.ImageContainer} source={this.state.ImageSource} />
+                                    }
 
-                            {this.state.ImageSource === null ? <Text>Select a Photo</Text> :
-                                <Image style={styles.ImageContainer} source={this.state.ImageSource} />
-                            }
+                                </View>
 
-                        </View>
+                            </TouchableOpacity>
 
-                    </TouchableOpacity>
+                            <TextInput
+                                placeholder="Enter Image Name "
+                                ref={this.tagInput}
+                                onChangeText={data => this.setState({ image_tag: data })}
+                                underlineColorAndroid='transparent'
+                                style={styles.TextInputStyle}
+                            />
 
-                    <TextInput
-                        placeholder="Enter Image Name "
-                        ref={this.tagInput}
-                        onChangeText={data => this.setState({ image_tag: data })}
-                        underlineColorAndroid='transparent'
-                        style={styles.TextInputStyle}
-                    />
+                            <TouchableOpacity onPress={this.uploadImageToServer} activeOpacity={0.6} style={styles.button} >
 
-                    <TouchableOpacity onPress={this.uploadImageToServer} activeOpacity={0.6} style={styles.button} >
+                                <Text style={styles.TextStyle}> UPLOAD IMAGE TO SERVER </Text>
 
-                        <Text style={styles.TextStyle}> UPLOAD IMAGE TO SERVER </Text>
-
-                    </TouchableOpacity>
+                            </TouchableOpacity>
+                        </React.Fragment> : null}
 
                     <View style={styles.MainContainer}>
                         <ListView
